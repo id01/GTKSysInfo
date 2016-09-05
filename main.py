@@ -1,9 +1,20 @@
+'''
+* Name: GTKSysInfo
+* Version: 0.0.2 (PRERELEASE)
+* File: main.py
+* Description: Frontend system information for Linux GTK
+* Contributors: id01 (main developer)
+* Libraries used: 
+'''
 import gi;
 gi.require_version("Gtk", "3.0");
 import re;
 import os;
 import time;
 from gi.repository import Gtk
+
+# Move to directory that main.py is in
+os.chdir(os.path.realpath("./" + "".join(__file__.rsplit('/', 1)[0])));
 
 # Check if rooted
 if os.system("bin/c/checkroot")!=0:
@@ -67,6 +78,7 @@ class mainClass(Gtk.Window):
 		self.diskPartFsLabel = Gtk.Label()
 		self.diskPartSizeLabel = Gtk.Label()
 		self.diskPartMountLabel = Gtk.Label()
+		# Set align
 		self.diskPartTypeLabel.set_valign(1)
 		self.diskPartTypeLabel.set_halign(1)
 		self.diskPartNameLabel.set_valign(1)
@@ -77,6 +89,7 @@ class mainClass(Gtk.Window):
 		self.diskPartSizeLabel.set_halign(1)
 		self.diskPartMountLabel.set_valign(1)
 		self.diskPartMountLabel.set_halign(1)
+		# Set text
 		self.diskPartTypeLabel.set_text("TYPE:\nNO DISK SPECIFIED")
 		self.diskPartNameLabel.set_text("PARTITIONS:\nNO DISK SPECIFIED")
 		self.diskPartFsLabel.set_text("\n")
@@ -160,6 +173,7 @@ class mainClass(Gtk.Window):
 		self.stressTestGrid=Gtk.Grid(column_homogeneous=True, row_homogeneous=False, column_spacing=10, row_spacing=2);
 		self.add(self.stressTestGrid);
 		## Labels
+		# Create
 		self.floatoperLabel=Gtk.Label();
 		self.intoperLabel=Gtk.Label();
 		self.floatoperLabelMulti=Gtk.Label();
@@ -167,8 +181,20 @@ class mainClass(Gtk.Window):
 		self.ramallocWriteLabel=Gtk.Label();
 		self.ramallocReadLabel=Gtk.Label();
 		self.randgenLabel=Gtk.Label();
+		# Set Selectable
+		self.floatoperLabel.set_selectable(True);
+		self.intoperLabel.set_selectable(True);
+		self.floatoperLabelMulti.set_selectable(True);
+		self.intoperLabelMulti.set_selectable(True);
+		self.ramallocWriteLabel.set_selectable(True);
+		self.ramallocReadLabel.set_selectable(True);
+		self.randgenLabel.set_selectable(True);
+		# Buttons
 		self.stressTestStartButton=Gtk.Button(label="Start Stress Test");
 		self.stressTestStartButton.connect("clicked", self.stress_test);
+		self.stressTestSaveButton=Gtk.Button(label="Save Results to File");
+		self.stressTestSaveButton.connect("clicked", self.stress_test_save);
+		# Set text
 		self.floatoperLabel.set_text("Float Operations/Second (single-core): UNKNOWN\n");
 		self.intoperLabel.set_text("Integer Operations/Second (single-core): UNKNOWN\n");
 		self.floatoperLabelMulti.set_text("Float Operations/Second (multi-core): UNKNOWN\n");
@@ -181,15 +207,16 @@ class mainClass(Gtk.Window):
 		self.stressTestSpinner.stop();
 
 		''' DRAWING - LAYER X '''
-		self.stressTestGrid.attach(self.intoperLabel, 0, 1, 2, 1);
-		self.stressTestGrid.attach(self.intoperLabelMulti, 0, 2, 2, 1);
-		self.stressTestGrid.attach(self.floatoperLabel, 0, 3, 2, 1);
-		self.stressTestGrid.attach(self.floatoperLabelMulti, 0, 4, 2, 1);
-		self.stressTestGrid.attach(self.randgenLabel, 0, 5, 2, 1);
-		self.stressTestGrid.attach(self.ramallocReadLabel, 0, 6, 2, 1);
-		self.stressTestGrid.attach(self.ramallocWriteLabel, 0, 7, 2, 1);
+		self.stressTestGrid.attach(self.intoperLabel, 0, 1, 4, 1);
+		self.stressTestGrid.attach(self.intoperLabelMulti, 0, 2, 4, 1);
+		self.stressTestGrid.attach(self.floatoperLabel, 0, 3, 4, 1);
+		self.stressTestGrid.attach(self.floatoperLabelMulti, 0, 4, 4, 1);
+		self.stressTestGrid.attach(self.randgenLabel, 0, 5, 4, 1);
+		self.stressTestGrid.attach(self.ramallocReadLabel, 0, 6, 4, 1);
+		self.stressTestGrid.attach(self.ramallocWriteLabel, 0, 7, 4, 1);
 		self.stressTestGrid.attach(self.stressTestStartButton, 0, 8, 1, 1);
-		self.stressTestGrid.attach(self.stressTestSpinner, 1, 8, 1, 1);
+		self.stressTestGrid.attach(self.stressTestSaveButton, 1, 8, 1, 1);
+		self.stressTestGrid.attach(self.stressTestSpinner, 2, 8, 1, 1);
 		self.stressTestScroll.add(self.stressTestGrid);
 		mainStack.add_titled(self.stressTestScroll, "Stress Test", "Stress Test");
 		
@@ -350,6 +377,21 @@ class mainClass(Gtk.Window):
 		self.ramallocReadLabel.set_text("RAM Read Speed (Bps): " + ramallocRead + " Bps\n");
 		self.updateGUI();
 		self.stressTestSpinner.stop();
+
+	## Stress Test Save Function
+	def stress_test_save(self, widget):
+		# Get Savefile
+		savefiledialog = Gtk.FileChooserDialog("Save as", self, Gtk.FileChooserAction.SAVE, (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
+		response = savefiledialog.run();
+#		# Write to file. This is a LOOONG line.
+		if response == Gtk.ResponseType.OK:
+			savefile = open(savefiledialog.get_filename(),'w');
+			savetext = self.intoperLabel.get_text() + self.intoperLabelMulti.get_text() + self.floatoperLabel.get_text() + self.floatoperLabelMulti.get_text() + self.randgenLabel.get_text() + self.ramallocReadLabel.get_text() + self.ramallocWriteLabel.get_text();
+			savefile.write(savetext);
+			savefile.close();
+			savefiledialog.destroy();
+		else:
+			savefiledialog.destroy();			
 
 ### Update GUI
 	def updateGUI(self):
