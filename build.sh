@@ -1,7 +1,9 @@
 #!/bin/bash
 
 printf "Compiled: " > out/build.txt
-echo $(date) > out/build.txt
+echo $(date) >> out/build.txt
+echo "" >> out/build.txt
+cat README.md >> out/build.txt
 echo "Creating directories"
 mkdir out 2> /dev/null
 mkdir out/bin 2> /dev/null

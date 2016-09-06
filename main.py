@@ -4,25 +4,27 @@
 * File: main.py
 * Description: Frontend system information for Linux GTK
 * Contributors: id01 (main developer)
-* Libraries used: 
+* Libraries used: PyGObject, Python, C++, C. (View Readme.md)
 '''
 import gi;
 gi.require_version("Gtk", "3.0");
 import re;
 import os;
 import time;
+import sys;
 from gi.repository import Gtk
 
+# Define File Variable (To run under freeze)
+__file = sys.argv[0];
+
 # Move to directory that main.py is in
-os.chdir(os.path.realpath("./" + "".join(__file__.rsplit('/', 1)[0])));
+os.chdir(__file.rsplit('/', 1)[0]);
 
 # Check if rooted
 if os.system("bin/c/checkroot")!=0:
 	rooted=False;
 else:
 	rooted=True;
-
-# Define Variables
 
 # Main window
 class mainClass(Gtk.Window):
