@@ -1,13 +1,13 @@
 #!/bin/bash
 
-printf "Compiled: " > out/build.txt
-echo $(date) >> out/build.txt
-echo "" >> out/build.txt
-cat README.md >> out/build.txt
 echo "Creating directories"
 mkdir out 2> /dev/null
 mkdir out/bin 2> /dev/null
 mkdir out/bin/c 2> /dev/null
+printf "Compiled: " > out/build.txt
+echo $(date) >> out/build.txt
+echo "" >> out/build.txt
+cat README.md >> out/build.txt
 echo "Compiling checkroot.c"
 gcc -o out/bin/c/checkroot bin/c/checkroot.c
 echo "Compiling floatoper.c"
