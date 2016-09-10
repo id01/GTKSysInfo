@@ -4,6 +4,7 @@ echo "Creating directories"
 mkdir out 2> /dev/null
 mkdir out/bin 2> /dev/null
 mkdir out/bin/c 2> /dev/null
+mkdir out/bin/logos 2> /dev/null
 printf "Compiled: " > out/build.txt
 echo $(date) >> out/build.txt
 echo "" >> out/build.txt
@@ -24,6 +25,8 @@ echo "Compiling ramalloc.cpp"
 g++ -o out/bin/c/ramalloc bin/c/ramalloc.cpp
 echo "Compiling diskalloc.cpp"
 g++ -o out/bin/c/diskalloc bin/c/diskalloc.cpp
+echo "Copying Logos"
+cp bin/logos/* out/bin/logos/
 echo "Compiling main.py"
 python -m compileall main.py | grep -v "Compiling main.py..."
 chmod +x main.pyc

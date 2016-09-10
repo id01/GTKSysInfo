@@ -14,10 +14,15 @@ import time;
 import sys;
 from gi.repository import Gtk
 
+# If you are freezing, set this to true.
+compiled=False;
+
 # Define File Variable (To run under freeze)
-#__filedir = os.path.dirname(os.path.abspath(sys.argv[0]));
-__filedir = os.path.dirname(os.path.realpath("/proc/self/exe"));
-#print "CDing to " + __filedir;
+if compiled==False:
+	__filedir = os.path.dirname(os.path.realpath(__file__));
+if compiled==True:
+	__filedir = os.path.dirname(os.path.realpath("/proc/self/exe"));
+print "CDing to " + __filedir;
 
 # Move to directory that main.py is in
 os.chdir(__filedir);
@@ -183,15 +188,21 @@ class mainClass(Gtk.Window):
 		## Scroll Container, Grid
 		self.cpuScroll = Gtk.ScrolledWindow(hexpand=True, vexpand=True);
 		self.cpuGrid = Gtk.Grid(row_spacing = 60, halign=Gtk.Align.CENTER);
-		self.cpuTextGrid = Gtk.Grid(column_spacing = 40);
+		self.cpuTextGrid = Gtk.Grid(column_spacing = 40, column_homogeneous=True);
 		self.add(self.cpuGrid);
 		## Create Labels
 		self.cpuBaseLabel = Gtk.Label();
 		self.cpuAdvLabel = Gtk.Label();
 		self.cpuBaseDataLabel = Gtk.Label();
 		self.cpuAdvDataLabel = Gtk.Label();
-		## Create Frame
+		## Create Frame, attach
+		self.cpuImage = Gtk.Image(); self.cpuImage.set_alignment(0.5, 0.5);
 		self.cpuImageFrame = Gtk.Frame();
+		self.cpuImageFrame.set_size_request(400, 150);
+		self.cpuImageFrame.set_label("Logo (c) its corresponding manufacturer");
+		self.cpuImageFrame.set_label_align(1, 1);
+		self.cpuImageFrame.set_shadow_type(Gtk.ShadowType.IN);
+		self.cpuImageFrame.add(self.cpuImage);
 		
 		''' DRAWING - LAYER 2 '''
 		## Add all to grid
@@ -208,11 +219,17 @@ class mainClass(Gtk.Window):
 		''' CREATING - LAYER X-1 '''
 		## Scroll Container, Grid
 		self.sensorScroll = Gtk.ScrolledWindow(hexpand=True, vexpand=True);
-		self.sensorGrid = Gtk.Grid(row_spacing = 60, halign=Gtk.Align.CENTER);
-		self.sensorImageGrid = Gtk.Grid(column_spacing = 40);
+		self.sensorGrid = Gtk.Grid(row_spacing = 30, halign=Gtk.Align.CENTER);
 		self.sensorTextGrid = Gtk.Grid(column_spacing = 40);
 		self.add(self.sensorGrid);
-		self.add(self.sensorImageGrid);
+		## Image
+		self.sensorImageFrame = Gtk.Frame(); self.sensorImageFrame.set_shadow_type(Gtk.ShadowType.IN);
+		self.sensorImageFrame.set_size_request(500, 150);
+		self.sensorImageFrame.set_label("Image credit: Pixabay");
+		self.sensorImageFrame.set_label_align(1, 1);
+		self.sensorImage = Gtk.Image(); self.sensorImage.set_alignment(0.5,0.5);
+		self.sensorImage.set_from_file("bin/logos/ram.png");
+		self.sensorImageFrame.add(self.sensorImage);
 		## Labels
 		self.cpuMbLabel = Gtk.Label();
 		self.cpuMbDataLabel = Gtk.Label();
@@ -227,7 +244,7 @@ class mainClass(Gtk.Window):
 		self.sensorTextGrid.add(self.cpuSensorLabel);
 		self.sensorTextGrid.add(self.cpuSensorDataLabel);
 		self.sensorScroll.add(self.sensorTextGrid)
-		self.sensorGrid.add(self.sensorImageGrid);
+		self.sensorGrid.add(self.sensorImageFrame);
 		self.sensorGrid.attach(self.sensorScroll, 0, 1, 1, 1);
 		self.sensorGrid.attach(self.sensorExpandLabel, 0, 2, 1, 1);
 		self.change_sensor_text();
@@ -398,7 +415,40 @@ class mainClass(Gtk.Window):
 			os.system("umount /tmp/GTKSysInfo");
 
 ### LAYER 2
+	## Change Vendor images
+	def change_vendor_image(self):
+		if os.popen("lscpu | grep AMD").read().strip()!='':
+			cpuData=os.popen("lscpu | grep AMD").read().strip();
+			if "AMD Athlon" in cpuData:
+				self.cpuImage.set_from_file("bin/logos/amd_athlon.png"); return 0;
+			if "AMD FX" in cpuData:
+				self.cpuImage.set_from_file("bin/logos/amd_fx.png"); return 0;
+			if "AMD Opteron" in cpuData:
+				self.cpuImage.set_from_file("bin/logos/amd_opteron.png"); return 0;
+			if "AMD Sempron" in cpuData:
+				self.cpuImage.set_from_file("bin/logos/amd_sempron.png"); return 0;
+			self.cpuImage.set_from_file("bin/logos/amd.png"); return 0;
+		if os.popen("lscpu | grep Intel").read().strip()!='':
+			cpuData=os.popen("lscpu | grep Intel").read().strip();
+			if "Intel(R) Celeron" in cpuData:
+				self.cpuImage.set_from_file("bin/logos/Intel_Celeron.png"); return 0;
+			if "Intel(R) Core(TM) i3" in cpuData:
+				self.cpuImage.set_from_file("bin/logos/Intel_i3.png"); return 0;
+			if "Intel(R) Core(TM) i5" in cpuData:
+				self.cpuImage.set_from_file("bin/logos/Intel_i5.png"); return 0;
+			if "Intel(R) Core(TM) i7" in cpuData:
+				self.cpuImage.set_from_file("bin/logos/Intel_i7.png"); return 0;
+			if "Intel(R) Pentium" in cpuData:
+				self.cpuImage.set_from_file("bin/logos/Intel_Pentium.png"); return 0;
+			if "Intel(R) Xeon" in cpuData:
+				self.cpuImage.set_from_file("bin/logos/Intel_Xeon.png"); return 0;
+			self.cpuImage.set_from_file("bin/logos/Intel.png"); return 0;
+		return 1;
+		
+	## Change cpu text
 	def change_cpu_text(self):
+		# Change image to defaults just in case none of the below work
+		self.cpuImage.set_from_file("bin/logos/generic.png");
 		# Get CPU Base info
 		cpuArchDataRaw=os.popen("lscpu | grep -E 'Architecture|Byte Order'").read().replace("\n",":").split(":");
 		cpuArchData=cpuArchDataRaw[1].strip() + ", " + cpuArchDataRaw[3].strip();
@@ -412,20 +462,19 @@ class mainClass(Gtk.Window):
 		cpuVendorData=os.popen("lscpu | grep 'Vendor ID:'").read().split(":")[1].strip();
 		cpuModelData=os.popen("lscpu | grep 'Model name:'").read().split(":")[1].strip();
 		cpuVirtData=os.popen("lscpu | grep 'Virtualization:'").read().split(":")[1].strip();
+		if cpuVirtData.strip()=="":
+			cpuVirtData="none";
 		if os.popen("lscpu | grep pae").read().strip()=="":
 			cpuPaeData="No";
 		else:
 			cpuPaeData="Yes";
-#		if "Intel" in cpuVendorData or "Intel" in cpuModelData:
-#			cpuVendor=0;
-#		elif "AMD" in cpuVendorData or "AMD" in cpuModelData:
-#			cpuVendor=1;
-#		else:
-#			cpuVendor=2;
 		self.cpuBaseLabel.set_text("Architecture:\nCores:\nThreads:\nSpeed:\nL1 Cache:\n\nL2 Cache:\nL3 Cache:");
-		self.cpuAdvLabel.set_text("Vendor:\nModel:\nVirtualization:\nPAE support:\n\t\t");
+		self.cpuAdvLabel.set_text("Vendor:\nModel:\nVirtualization:\nPAE support:\n");
 		self.cpuBaseDataLabel.set_text(cpuArchData + "\n" + cpuCoreData + "\n" + cpuThreadData + "\n" + cpuSpeedData + "\n" + cpuCacheData);
-		self.cpuAdvDataLabel.set_text(cpuVendorData + "\n" + cpuModelData + "\n" + cpuVirtData + "\n" + cpuPaeData + "\n");
+		self.cpuAdvDataLabel.set_text(cpuVendorData.replace("Authentic","") + "\n" + cpuModelData + "\n" + cpuVirtData + "\n" + cpuPaeData + "\n");
+		
+		# Change Vendor Image
+		self.change_vendor_image();
 
 ### LAYER X-1
 	def change_sensor_text(self):

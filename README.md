@@ -28,6 +28,7 @@ id01 (Main Developer)
 * [cx_Freeze 4.3.4](https://pypi.python.org/pypi/cx_freeze), by Anthony Tuininga, Python License. Used in freeze.py.
 * [C++](https://isocpp.org), by Standard C++ Foundation. Used in bin/c/*.cpp
 * C Used in bin/c/*.c
+* Disclaimer: Manufacturer logos are not my own. Intel logos are (c) Intel Inc. AMD logos are (c) AMD Inc.
 
 ## System Requirments
 To run standalone:
@@ -41,6 +42,8 @@ python python-utils python-gi gcc g++ util-linux lm-sensors hddtemp libsensors3
 Building standalone also requires cx_freeze (from pip or source) be installed.
 
 ## Changelog
+* 0.0.6 (Prerelease)
+ * Added images
 * 0.0.5 (Prerelease)
  * Added freeze.py install
  * Got $PATH working
@@ -64,3 +67,8 @@ Building standalone also requires cx_freeze (from pip or source) be installed.
  * Added copy/paste for stress test results.
 * 0.0.1 (Prerelease):
  * Initial Commit
+ * Added main.py
+ * Added stress test
+ * Added disk data
+ * Added build.sh
+ * Added pretty much everything that wasn't in later releases
