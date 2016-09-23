@@ -1,6 +1,6 @@
 '''
 * Name: GTKSysInfo
-* Version: 0.0.2 (PRERELEASE)
+* Version: 0.0.8 (PRERELEASE)
 * File: main.py
 * Description: Frontend system information for Linux GTK
 * Contributors: id01 (main developer)
@@ -55,17 +55,14 @@ class mainClass(Gtk.Window):
 		self.hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
 		self.add(self.hbox);
 ### WARNING IF NO ROOT, ACTIVATE EXTRA FEATURES IF ROOTED
+		# Create log variable
+		log = "\n";
 		if rooted==False:
-			rootWarning = Gtk.MessageDialog(self, 0, Gtk.MessageType.WARNING, Gtk.ButtonsType.OK, "Warning: No root")
-			rootWarning.format_secondary_text("Some features may not work with limited previliges.");
-			rootWarning.run();
-			rootWarning.destroy();
+			log+="WARNING: No root. Some features may not work with limited previliges.\n";
 		else:
 			if os.system("mkdir /tmp/GTKSysInfo")!=0:
 				if os.system("umount /tmp/GTKSysInfo; rmdir /tmp/GTKSysInfo")!=0:
-					tmpWarning = Gtk.MessageDialog(self, 0, Gtk.MessageType.ERROR, Gtk.ButtonsType.OK, "Directory Exists");
-					tmpWarning.format_secondary_text("ERROR: /tmp/GTKSysInfo exists and may contain data. Did you create it or kill this task?");
-					tmpWarning.run(); exit();
+					log+="ERROR: /tmp/GTKSysInfo exists and may contain data. Did you create it or kill this task?\n";
 				else:
 					os.system("mkdir /tmp/GTKSysInfo");
 
@@ -76,6 +73,34 @@ class mainClass(Gtk.Window):
 		mainStack.set_transition_duration(500);
 		# Within mainStack
 
+### LAYER 0 (main)
+		''' CREATING - LAYER 0 '''
+		## Define Grid
+		self.landingGrid = Gtk.Grid(column_homogeneous=True);
+		## Define Title
+		self.landingTitle = Gtk.Label();
+		self.landingTitle.set_text("System info GUI: Landing page\n");
+		## Define Logs
+		self.landingLogLabel = Gtk.Label();
+		self.landingLogLabel.set_text("Warnings and Errors:");
+		self.landingLogFrame = Gtk.Frame();
+		self.landingLog = Gtk.Label();
+		self.landingLog.set_text(log);
+		self.landingLogFrame.add(self.landingLog);
+		## Define help and info buttons
+		self.landingHelpButton = Gtk.Button(label="Help");
+		self.landingInfoButton = Gtk.Button(label="Version");
+		self.landingInfoButton.connect("clicked", self.openInfo);
+		self.landingHelpButton.connect("clicked", self.openHelp);
+
+		''' DRAWING - LAYER 0 '''
+		self.landingGrid.attach(self.landingTitle,0,0,8,1);
+		self.landingGrid.attach(self.landingLogLabel,0,1,8,1);
+		self.landingGrid.attach(self.landingLogFrame,1,2,6,1);
+		self.landingGrid.attach(self.landingHelpButton,1,3,1,1);
+		self.landingGrid.attach(self.landingInfoButton,2,3,1,1);
+		mainStack.add_titled(self.landingGrid, "Landing", "Landing");
+
 ### LAYER 1
 		# Define First layer of Stack
 		''' CREATING - LAYER 1 '''
@@ -85,11 +110,9 @@ class mainClass(Gtk.Window):
 		self.diskGrid.set_column_spacing(spacing=8);
 		self.diskIndentLabel=Gtk.Label()
 		self.diskIndentLabel.set_text("\t\t\t\t\t");
-		self.add(self.diskGrid)
 		## Disk Partitions
 		self.diskPartGrid = Gtk.Grid()
 		self.diskPartGrid.set_column_spacing(spacing=10);
-		self.add(self.diskPartGrid)
 		self.diskPartTypeLabel = Gtk.Label()
 		self.diskPartNameLabel = Gtk.Label()
 		self.diskPartFsLabel = Gtk.Label()
@@ -124,10 +147,8 @@ class mainClass(Gtk.Window):
 		self.diskStateLabel.set_halign(1)
 		## Create button for each disk
 		self.diskSelectGrid = Gtk.Grid()
-		self.add(self.diskSelectGrid)
 		self.diskAllGrid = Gtk.Grid()
 		self.diskAllGrid.set_column_spacing(spacing=10);
-		self.add(self.diskAllGrid)
 		self.buttonList=[]
 		for x in range(0,int(os.popen("lsblk -io NAME | grep -v '-' | grep -v 'NAME' | wc -l").read())):
 			disknamevar=os.popen("lsblk -io NAME | grep -v '-' | grep -v 'NAME' | head -n " + str(x+1) + " | tail -n 1").read().rstrip();
@@ -146,7 +167,6 @@ class mainClass(Gtk.Window):
 		self.diskSelectGrid.attach(self.partSelectEntry, 1, len(self.buttonList)+2, 1, 1);
 		## Create Partition Details
 		self.partDetailsGrid = Gtk.Grid();
-		self.add(self.partDetailsGrid);
 		self.partDetailsLabel = Gtk.Label();
 		self.partDetailsLabel.set_text("Partition Details:\n");
 		self.partDetailsGrid.add(self.partDetailsLabel);
@@ -189,7 +209,6 @@ class mainClass(Gtk.Window):
 		self.cpuScroll = Gtk.ScrolledWindow(hexpand=True, vexpand=True);
 		self.cpuGrid = Gtk.Grid(row_spacing = 60, halign=Gtk.Align.CENTER);
 		self.cpuTextGrid = Gtk.Grid(column_spacing = 40, column_homogeneous=True);
-		self.add(self.cpuGrid);
 		## Create Labels
 		self.cpuBaseLabel = Gtk.Label();
 		self.cpuAdvLabel = Gtk.Label();
@@ -221,7 +240,6 @@ class mainClass(Gtk.Window):
 		self.sensorScroll = Gtk.ScrolledWindow(hexpand=True, vexpand=True);
 		self.sensorGrid = Gtk.Grid(row_spacing = 30, halign=Gtk.Align.CENTER);
 		self.sensorTextGrid = Gtk.Grid(column_spacing = 40);
-		self.add(self.sensorGrid);
 		## Image
 		self.sensorImageFrame = Gtk.Frame(); self.sensorImageFrame.set_shadow_type(Gtk.ShadowType.IN);
 		self.sensorImageFrame.set_size_request(500, 150);
@@ -256,7 +274,6 @@ class mainClass(Gtk.Window):
 		self.stressTestScroll = Gtk.ScrolledWindow(hexpand=True, vexpand=True);
 		## Grid
 		self.stressTestGrid=Gtk.Grid(column_homogeneous=True, row_homogeneous=False, column_spacing=10, row_spacing=2);
-		self.add(self.stressTestGrid);
 		## Labels
 		# Create
 		self.floatoperLabel=Gtk.Label();
@@ -299,8 +316,8 @@ class mainClass(Gtk.Window):
 		self.stressTestGrid.attach(self.randgenLabel, 0, 5, 4, 1);
 		self.stressTestGrid.attach(self.ramallocReadLabel, 0, 6, 4, 1);
 		self.stressTestGrid.attach(self.ramallocWriteLabel, 0, 7, 4, 1);
-		self.stressTestGrid.attach(self.stressTestStartButton, 0, 8, 1, 1);
-		self.stressTestGrid.attach(self.stressTestSaveButton, 1, 8, 1, 1);
+		self.stressTestGrid.attach(self.stressTestStartButton, 1, 8, 1, 1);
+		self.stressTestGrid.attach(self.stressTestSaveButton, 2, 8, 1, 1);
 		self.stressTestGrid.attach(self.stressTestSpinner, 2, 8, 1, 1);
 		self.stressTestScroll.add(self.stressTestGrid);
 		mainStack.add_titled(self.stressTestScroll, "Stress Test", "Stress Test");
@@ -314,6 +331,15 @@ class mainClass(Gtk.Window):
 		self.vbox.pack_start(mainStack, True, True, 0);
 
 ### FUNCTIONS
+
+### LAYER 0
+	## Show help info function
+	def openHelp(self, widget):
+		os.system("xdg-open bin/html/help.html &");
+	
+	## Show info function
+	def openInfo(self, widget):
+		os.system("xdg-open build.txt &");
 
 ### LAYER 1
 	## Define the function to Change Disk Text

@@ -1,3 +1,5 @@
+// id01
+// checks random number generation speed
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>

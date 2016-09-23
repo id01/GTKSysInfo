@@ -1,3 +1,5 @@
+// id01
+// Checks float operations per second (single core)
 #include <stdio.h>
 #include <time.h>
 #define TESTOS 250000000

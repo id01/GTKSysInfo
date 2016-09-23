@@ -1,3 +1,5 @@
+// id01
+// checks float operations per second multi core
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>

@@ -5,6 +5,7 @@ mkdir out 2> /dev/null
 mkdir out/bin 2> /dev/null
 mkdir out/bin/c 2> /dev/null
 mkdir out/bin/logos 2> /dev/null
+mkdir out/bin/html 2> /dev/null
 printf "Compiled: " > out/build.txt
 echo $(date) >> out/build.txt
 echo "" >> out/build.txt
@@ -27,6 +28,8 @@ echo "Compiling diskalloc.cpp"
 g++ -o out/bin/c/diskalloc bin/c/diskalloc.cpp
 echo "Copying Logos"
 cp bin/logos/* out/bin/logos/
+echo "Copying Help"
+cp bin/html/* out/bin/html/
 echo "Compiling main.py"
 python -m compileall main.py | grep -v "Compiling main.py..."
 chmod +x main.pyc

@@ -13,8 +13,10 @@ To run:
 out/main.pyc
 ```
 
-To build a portable version, run:
+To build a portable version, first change "compiled=False" to "compiled=True" in main.py.  
+Then, run:
 ```
+./build.sh  
 python freeze.py build
 ```
 Files will be placed in the build/ directory. Program may run into problems if built this way.
@@ -26,7 +28,7 @@ id01 (Main Developer)
 * [PyGObject](http://www.pygtk.org/), by James Henstrige, Licensed under GNU LGPL. Used in main.py.
 * [Python](https://www.python.org/) and included libraries, by Python Software Foundation, Python License. Used in main.py and freeze.py.
 * [cx_Freeze 4.3.4](https://pypi.python.org/pypi/cx_freeze), by Anthony Tuininga, Python License. Used in freeze.py.
-* [C++](https://isocpp.org), by Standard C++ Foundation. Used in bin/c/*.cpp
+* C++ Used in bin/c/*.cpp
 * C Used in bin/c/*.c
 * Disclaimer: Manufacturer logos are not my own. Intel logos are (c) Intel Inc. AMD logos are (c) AMD Inc.
 
@@ -42,6 +44,11 @@ python python-utils python-gi gcc g++ util-linux lm-sensors hddtemp libsensors3
 Building standalone also requires cx_freeze (from pip or source) be installed.
 
 ## Changelog
+* 0.0.8 (Prerelease)
+ * Created Landing page
+ * Created Help.html
+ * Removed "no root" warning popup
+ * Updated comments, preparing for publicizing of repository.
 * 0.0.7 (Prerelease)
  * Added more images
  * Ramalloc.c instead of .cpp, more efficient, more accurate result.

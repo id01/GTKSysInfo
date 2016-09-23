@@ -1,3 +1,5 @@
+// id01
+// checks int operations per second multi core
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>

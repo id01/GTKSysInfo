@@ -1,3 +1,5 @@
+// id01
+// checks ram read/write speed
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>

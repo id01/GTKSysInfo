@@ -1,3 +1,5 @@
+// id01
+// checks int operations per second single core
 #include <stdio.h>
 #include <time.h>
 #define TESTOS 500000000
