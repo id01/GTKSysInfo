@@ -16,8 +16,8 @@ int main(int argc, char *argv[])
 	arg = "";
 	arg += argv[1];
 	// Open File
-	FILE *testfile;
-	testfile=fopen(arg.c_str(), "w");
+	FILE *testfile = fopen(arg.c_str(), "w");
+	if (!testfile) { return 1; }
 	// Start timer. Write to file many times.
 	long timestart = clock();
 	for (int i=0; i<100000000; i++)

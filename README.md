@@ -42,6 +42,10 @@ python python-utils python-gi gcc g++ util-linux lm-sensors hddtemp libsensors3
 Building standalone also requires cx_freeze (from pip or source) be installed.
 
 ## Changelog
+* 0.0.7 (Prerelease)
+ * Added more images
+ * Ramalloc.c instead of .cpp, more efficient, more accurate result.
+ * Stress test units in Kx/s instead of x/s
 * 0.0.6 (Prerelease)
  * Added images
 * 0.0.5 (Prerelease)

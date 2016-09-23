@@ -502,6 +502,22 @@ class mainClass(Gtk.Window):
 		ramUsedData = os.popen("free | grep 'Mem:' | awk '{print $3}'").read().strip();
 		swapSizeData = os.popen("free | grep 'Swap:' | awk '{print $2}'").read().strip();
 		swapUsedData = os.popen("free | grep 'Swap:' | awk '{print $3}'").read().strip();
+
+		ramSizeInt = int(ramSizeData)
+		if ramSizeInt<=1024*1024:
+			pass;
+		elif ramSizeInt<=1024*1024*2:
+			self.sensorImage.set_from_file("bin/logos/ram1.png");
+		elif ramSizeInt<=1024*1024*4:
+			self.sensorImage.set_from_file("bin/logos/ram2.png");
+		elif ramSizeInt<=1024*1024*8:
+			self.sensorImage.set_from_file("bin/logos/ram3.png");
+		elif ramSizeInt<=1024*1024*12:
+			self.sensorImage.set_from_file("bin/logos/ram4.png");
+		elif ramSizeInt<=1024*1024*16:
+			self.sensorImage.set_from_file("bin/logos/ram5.gif");
+		else:
+			self.sensorImage.set_from_file("bin/logos/ram6.gif");
 			
 		self.cpuMbLabel.set_text("RAM amount:\nRAM usage:\nSwap amount:\nSwap usage:\n");
 		self.cpuMbDataLabel.set_text(ramSizeData + "\t\n" + ramUsedData + "\n" + swapSizeData + "\n" + swapUsedData + "\n");
@@ -519,41 +535,41 @@ class mainClass(Gtk.Window):
 		self.intoperLabel.set_text("Integer Operations/Second (single-core): CALCULATING...\n");
 		self.updateGUI();
 		intoperScore=float(os.popen("./bin/c/intoper").read());
-		self.intoperLabel.set_text("Integer Operations/Second (single-core): " + str(intoperScore) + " o/s\n");
+		self.intoperLabel.set_text("Integer Operations/Second (single-core): " + str(round(intoperScore)/1000) + " Ko/s\n");
 		self.updateGUI();
 		## Int - Multi Core
 		self.intoperLabelMulti.set_text("Integer Operations/Second (multi-core): CALCULATING...\n");
 		self.updateGUI();
 		intoperScore=float(os.popen("./bin/c/intopermulti").read());
-		self.intoperLabelMulti.set_text("Integer Operations/Second (multi-core): " + str(intoperScore) + " o/s\n");
+		self.intoperLabelMulti.set_text("Integer Operations/Second (multi-core): " + str(round(intoperScore)/1000) + " Ko/s\n");
 		self.updateGUI();
 		# Get Float Operation Data, Write to labels.
 		self.floatoperLabel.set_text("Float Operations/Second (single-core): CALCULATING...\n");
 		self.updateGUI();
 		floatoperScore=float(os.popen("./bin/c/floatoper").read());
-		self.floatoperLabel.set_text("Float Operations/Second (single-core): " + str(floatoperScore) + " o/s\n");
+		self.floatoperLabel.set_text("Float Operations/Second (single-core): " + str(round(floatoperScore)/1000) + " Ko/s\n");
 		self.updateGUI();
 		## Float - Multi Core
 		self.floatoperLabelMulti.set_text("Float Operations/Second (multi-core): CALCULATING...\n");
 		self.updateGUI();
 		floatoperScore=float(os.popen("./bin/c/floatopermulti").read());
-		self.floatoperLabelMulti.set_text("Float Operations/Second (multi-core): " + str(floatoperScore) + " o/s\n");
+		self.floatoperLabelMulti.set_text("Float Operations/Second (multi-core): " + str(round(floatoperScore)/1000) + " Ko/s\n");
 		self.updateGUI();
 		# Get Random Number Generation Data, Write to labels.
 		self.randgenLabel.set_text("Random Numbers Generated/Second: CALCULATING...\n");
 		self.updateGUI();
 		randgenScore=float(os.popen("./bin/c/randgen").read());
-		self.randgenLabel.set_text("Random Numbers Generated/Second: " + str(randgenScore) + " num/s\n");
+		self.randgenLabel.set_text("Random Numbers Generated/Second: " + str(round(randgenScore)/1000) + " Ko/s\n");
 		self.updateGUI();
 		# Get RAM Speed Data, Write to labels.
-		self.ramallocWriteLabel.set_text("RAM Write Speed (Bps): CALCULATING...\n");
-		self.ramallocReadLabel.set_text("RAM Read Speed (Bps): CALCULATING...\n");
+		self.ramallocWriteLabel.set_text("RAM Write Speed (KBps): CALCULATING...\n");
+		self.ramallocReadLabel.set_text("RAM Read Speed (KBps): CALCULATING...\n");
 		self.updateGUI();
 		ramallocRaw=os.popen("./bin/c/ramalloc").read().split();
 		ramallocRead=ramallocRaw[1];
 		ramallocWrite=ramallocRaw[0];
-		self.ramallocWriteLabel.set_text("RAM Write Speed (Bps): " + ramallocWrite + " Bps\n");
-		self.ramallocReadLabel.set_text("RAM Read Speed (Bps): " + ramallocRead + " Bps\n");
+		self.ramallocWriteLabel.set_text("RAM Write Speed (KBps): " + str(round(float(ramallocWrite))/1000) + " KBps\n");
+		self.ramallocReadLabel.set_text("RAM Read Speed (KBps): " + str(round(float(ramallocRead))/1000) + " KBps\n");
 		self.updateGUI();
 		self.stressTestSpinner.stop();
 

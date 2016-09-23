@@ -21,8 +21,8 @@ echo "Compiling intopermulti.c"
 gcc -pthread -o out/bin/c/intopermulti bin/c/intopermulti.c
 echo "Compiling randgen.c"
 gcc -o out/bin/c/randgen bin/c/randgen.c
-echo "Compiling ramalloc.cpp"
-g++ -o out/bin/c/ramalloc bin/c/ramalloc.cpp
+echo "Compiling ramalloc.c"
+gcc -o out/bin/c/ramalloc bin/c/ramalloc.c
 echo "Compiling diskalloc.cpp"
 g++ -o out/bin/c/diskalloc bin/c/diskalloc.cpp
 echo "Copying Logos"

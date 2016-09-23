@@ -1,15 +1,16 @@
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
+#define TESTOS 25000000
 
 int main()
 {
 	srand(clock());
 	long timestart = clock();
-	for (int i=0; i<25000000; i++)
+	for (int i=0; i<TESTOS; i++)
 	{
 		rand();
 	}
 	long timefinish = clock();
-	printf("%f\n", 25000000.0/((double)timefinish-(double)timestart)*CLOCKS_PER_SEC);
+	printf("%f\n", (double)TESTOS/((double)timefinish-(double)timestart)*CLOCKS_PER_SEC);
 }
