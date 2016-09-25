@@ -20,6 +20,10 @@ echo "Compiling floatopermulti.c"
 gcc -pthread -o out/bin/c/floatopermulti bin/c/floatopermulti.c
 echo "Compiling intopermulti.c"
 gcc -pthread -o out/bin/c/intopermulti bin/c/intopermulti.c
+echo "Compiling floatoperlatent.c"
+gcc -pthread -o out/bin/c/floatoperlatent bin/c/floatoperlatent.c
+echo "Compiling intoperlatent.c"
+gcc -pthread -o out/bin/c/intoperlatent bin/c/intoperlatent.c
 echo "Compiling randgen.c"
 gcc -o out/bin/c/randgen bin/c/randgen.c
 echo "Compiling ramalloc.c"

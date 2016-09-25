@@ -159,7 +159,6 @@ class mainClass(Gtk.Window):
 		for x in range(0,int(os.popen("lsblk -io NAME | grep -v '-' | grep -v 'NAME' | wc -l").read())):
 			disknamevar=os.popen("lsblk -io NAME | grep -v '-' | grep -v 'NAME' | head -n " + str(x+1) + " | tail -n 1").read().rstrip();
 			self.buttonList.append(Gtk.Button(label=disknamevar + "\n" + os.popen("lsblk -io SIZE /dev/" + disknamevar + " | head -n 2 | tail -n 1").read().strip()));
-			print self.buttonList[x]
 			self.buttonList[x].connect("clicked", self.change_text_disk, disknamevar)
 			self.diskSelectGrid.attach(self.buttonList[x], 1, x+1, 1, 1)
 		## Create Partition Select Entry
@@ -286,6 +285,8 @@ class mainClass(Gtk.Window):
 		self.intoperLabel=Gtk.Label();
 		self.floatoperLabelMulti=Gtk.Label();
 		self.intoperLabelMulti=Gtk.Label();
+		self.floatoperLabelLatent=Gtk.Label();
+		self.intoperLabelLatent=Gtk.Label();
 		self.ramallocWriteLabel=Gtk.Label();
 		self.ramallocReadLabel=Gtk.Label();
 		self.randgenLabel=Gtk.Label();
@@ -294,6 +295,8 @@ class mainClass(Gtk.Window):
 		self.intoperLabel.set_selectable(True);
 		self.floatoperLabelMulti.set_selectable(True);
 		self.intoperLabelMulti.set_selectable(True);
+		self.floatoperLabelLatent.set_selectable(True);
+		self.intoperLabelLatent.set_selectable(True);
 		self.ramallocWriteLabel.set_selectable(True);
 		self.ramallocReadLabel.set_selectable(True);
 		self.randgenLabel.set_selectable(True);
@@ -307,6 +310,8 @@ class mainClass(Gtk.Window):
 		self.intoperLabel.set_text("Integer Operations/Second (single-core): UNKNOWN\n");
 		self.floatoperLabelMulti.set_text("Float Operations/Second (multi-core): UNKNOWN\n");
 		self.intoperLabelMulti.set_text("Integer Operations/Second (multi-core): UNKNOWN\n");
+		self.floatoperLabelLatent.set_text("Float Operations/Second (multi-core, high latency): UNKNOWN\n");
+		self.intoperLabelLatent.set_text("Integer Operations/Second (multi-core, high latency): UNKNOWN\n");
 		self.randgenLabel.set_text("Random Numbers Generated/Second: UNKNOWN\n");
 		self.ramallocWriteLabel.set_text("RAM Write Speed (Bps): UNKNOWN\n");
 		self.ramallocReadLabel.set_text("RAM Read Speed (Bps): UNKNOWN\n");
@@ -317,14 +322,16 @@ class mainClass(Gtk.Window):
 		''' DRAWING - LAYER X '''
 		self.stressTestGrid.attach(self.intoperLabel, 0, 1, 4, 1);
 		self.stressTestGrid.attach(self.intoperLabelMulti, 0, 2, 4, 1);
-		self.stressTestGrid.attach(self.floatoperLabel, 0, 3, 4, 1);
-		self.stressTestGrid.attach(self.floatoperLabelMulti, 0, 4, 4, 1);
-		self.stressTestGrid.attach(self.randgenLabel, 0, 5, 4, 1);
-		self.stressTestGrid.attach(self.ramallocReadLabel, 0, 6, 4, 1);
-		self.stressTestGrid.attach(self.ramallocWriteLabel, 0, 7, 4, 1);
-		self.stressTestGrid.attach(self.stressTestStartButton, 1, 8, 1, 1);
-		self.stressTestGrid.attach(self.stressTestSaveButton, 2, 8, 1, 1);
-		self.stressTestGrid.attach(self.stressTestSpinner, 2, 8, 1, 1);
+		self.stressTestGrid.attach(self.intoperLabelLatent, 0, 3, 4, 1);
+		self.stressTestGrid.attach(self.floatoperLabel, 0, 4, 4, 1);
+		self.stressTestGrid.attach(self.floatoperLabelMulti, 0, 5, 4, 1);
+		self.stressTestGrid.attach(self.floatoperLabelLatent, 0, 6, 4, 1);
+		self.stressTestGrid.attach(self.randgenLabel, 0, 7, 4, 1);
+		self.stressTestGrid.attach(self.ramallocReadLabel, 0, 8, 4, 1);
+		self.stressTestGrid.attach(self.ramallocWriteLabel, 0, 9, 4, 1);
+		self.stressTestGrid.attach(self.stressTestStartButton, 1, 10, 1, 1);
+		self.stressTestGrid.attach(self.stressTestSaveButton, 2, 10, 1, 1);
+		self.stressTestGrid.attach(self.stressTestSpinner, 1, 12, 1, 1);
 		self.stressTestScroll.add(self.stressTestGrid);
 		mainStack.add_titled(self.stressTestScroll, "Stress Test", "Stress Test");
 		
@@ -575,6 +582,12 @@ class mainClass(Gtk.Window):
 		intoperScore=float(os.popen("./bin/c/intopermulti").read());
 		self.intoperLabelMulti.set_text("Integer Operations/Second (multi-core): " + str(round(intoperScore)/1000) + " Ko/s\n");
 		self.updateGUI();
+		## Int - Latent
+		self.intoperLabelLatent.set_text("Integer Operations/Second (multi-core, high latency): CALCULATING...\n");
+		self.updateGUI();
+		intoperScore=float(os.popen("./bin/c/intoperlatent").read());
+		self.intoperLabelLatent.set_text("Integer Operations/Second (multi-core, high latency): " + str(round(intoperScore)/1000) + " Ko/s\n");
+		self.updateGUI(); self.updateGUI();
 		# Get Float Operation Data, Write to labels.
 		self.floatoperLabel.set_text("Float Operations/Second (single-core): CALCULATING...\n");
 		self.updateGUI();
@@ -587,6 +600,12 @@ class mainClass(Gtk.Window):
 		floatoperScore=float(os.popen("./bin/c/floatopermulti").read());
 		self.floatoperLabelMulti.set_text("Float Operations/Second (multi-core): " + str(round(floatoperScore)/1000) + " Ko/s\n");
 		self.updateGUI();
+		## Float - Latent
+		self.floatoperLabelLatent.set_text("Float Operations/Second (multi-core, high latency): CALCULATING...\n");
+		self.updateGUI();
+		floatoperScore=float(os.popen("./bin/c/floatoperlatent").read());
+		self.floatoperLabelLatent.set_text("Float Operations/Second (multi-core, high latency): " + str(round(floatoperScore)/1000) + " Ko/s\n");
+		self.updateGUI(); self.updateGUI();
 		# Get Random Number Generation Data, Write to labels.
 		self.randgenLabel.set_text("Random Numbers Generated/Second: CALCULATING...\n");
 		self.updateGUI();
@@ -613,7 +632,7 @@ class mainClass(Gtk.Window):
 #		# Write to file. This is a LOOONG line.
 		if response == Gtk.ResponseType.OK:
 			savefile = open(savefiledialog.get_filename(),'w');
-			savetext = self.intoperLabel.get_text() + self.intoperLabelMulti.get_text() + self.floatoperLabel.get_text() + self.floatoperLabelMulti.get_text() + self.randgenLabel.get_text() + self.ramallocReadLabel.get_text() + self.ramallocWriteLabel.get_text();
+			savetext = self.intoperLabel.get_text() + self.intoperLabelMulti.get_text() + self.intoperLabelLatent.get_text() + self.floatoperLabel.get_text() + self.floatoperLabelMulti.get_text() + self.floatoperLabelLatent.get_text() + self.randgenLabel.get_text() + self.ramallocReadLabel.get_text() + self.ramallocWriteLabel.get_text();
 			savefile.write(savetext);
 			savefile.close();
 			savefiledialog.destroy();

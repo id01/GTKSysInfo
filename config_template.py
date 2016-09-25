@@ -2,6 +2,6 @@
 COMPILED=False;
 
 # Version
-VERSION="0.0.9 (Prerelease)";
+VERSION="0.1.0 (Testing)";
 
 # Compiler Overrides
