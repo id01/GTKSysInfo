@@ -30,6 +30,9 @@ echo "Copying Logos"
 cp bin/logos/* out/bin/logos/
 echo "Copying Help"
 cp bin/html/* out/bin/html/
+echo "Compiling config.py"
+python -m compileall config.py | grep -v "Compiling config.py..."
+mv config.pyc out/config.pyc
 echo "Compiling main.py"
 python -m compileall main.py | grep -v "Compiling main.py..."
 chmod +x main.pyc

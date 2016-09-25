@@ -1,6 +1,6 @@
 '''
 * Name: GTKSysInfo
-* Version: 0.0.8 (PRERELEASE)
+* Version: <see config_template.py>
 * File: main.py
 * Description: Frontend system information for Linux GTK
 * Contributors: id01 (main developer)
@@ -12,10 +12,12 @@ import re;
 import os;
 import time;
 import sys;
-from gi.repository import Gtk
+from gi.repository import Gtk;
+import config;
 
-# If you are freezing, set this to true.
-compiled=False;
+# Import configuration
+compiled=config.COMPILED;
+version =config.VERSION;
 
 # Define File Variable (To run under freeze)
 if compiled==False:
@@ -79,7 +81,10 @@ class mainClass(Gtk.Window):
 		self.landingGrid = Gtk.Grid(column_homogeneous=True);
 		## Define Title
 		self.landingTitle = Gtk.Label();
-		self.landingTitle.set_text("System info GUI: Landing page\n");
+		self.landingTitle.set_text("System info GUI: Landing page");
+		## Define Version
+		self.landingVersion = Gtk.Label();
+		self.landingVersion.set_text("Version " + version + "\n");
 		## Define Logs
 		self.landingLogLabel = Gtk.Label();
 		self.landingLogLabel.set_text("Warnings and Errors:");
@@ -95,10 +100,11 @@ class mainClass(Gtk.Window):
 
 		''' DRAWING - LAYER 0 '''
 		self.landingGrid.attach(self.landingTitle,0,0,8,1);
-		self.landingGrid.attach(self.landingLogLabel,0,1,8,1);
-		self.landingGrid.attach(self.landingLogFrame,1,2,6,1);
-		self.landingGrid.attach(self.landingHelpButton,1,3,1,1);
-		self.landingGrid.attach(self.landingInfoButton,2,3,1,1);
+		self.landingGrid.attach(self.landingVersion,0,1,8,1);
+		self.landingGrid.attach(self.landingLogLabel,0,2,8,1);
+		self.landingGrid.attach(self.landingLogFrame,1,3,6,1);
+		self.landingGrid.attach(self.landingHelpButton,1,4,1,1);
+		self.landingGrid.attach(self.landingInfoButton,2,4,1,1);
 		mainStack.add_titled(self.landingGrid, "Landing", "Landing");
 
 ### LAYER 1
