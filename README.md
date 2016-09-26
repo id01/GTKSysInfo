@@ -7,26 +7,11 @@ To build for your system, run:
 ```
 make
 ```
-All files will be put in the out/ directory. If built this way, dependencies must be installed on the system.
+All files will be put in the out/ directory. Dependencies must be installed on the system.
 
 To run:
 ```
 out/gsysinfo
-```
-
-To build a portable version, run:
-```
-make freeze
-```
-Files will be placed in the build/ directory. Program may not be as reliable if built this way.
-
-To install a portable version of the program, run:
-```
-make freeze-install
-```
-To uninstall, run:
-```
-make freeze-uninstall
 ```
 
 ## Contributors
