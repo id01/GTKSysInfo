@@ -32,7 +32,6 @@ Same as Python 2, but replacing Python 2 modules with their python 3 counterpart
  * Ported to Python 3
 * 0.1.0 (Testing)
  * High latency stress tests
- * (TODO) Partitions in a drop down menu
 * 0.0.9 (Prerelease)
  * Created makefile
  * Created configuration python file
