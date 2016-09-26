@@ -1,0 +1,25 @@
+<html>
+<body>
+<h2>GTK System Info Help</h2>
+This is a simple system info utility for GTK. It is a frontend for terminal tools like lsblk and lscpu. It also has a stress test function.<br>
+<h4>The Disks Panel</h4>
+The disks panel can be accessed by clicking "disks" on the top portion of the screen.<br>
+To the left is a list of all the detected hard drives, according to their kernel names.<br>
+Upon clicking, it displays information about that specific hard disk, including its type (whether it is a hard disk at all), its vendor (not always accurate!),<br>
+its model, its running state, its ability to be hotplugged (or not), and a list of its partitions.<br>
+Each one of these partitions can be viewed more in detail by typing the partition name (ex: sda1) into the text box on this panel, and pressing "return".<br>
+This information will fill the "Partition Details" section on the right, which includes percentage of disk space used in the partition and the UUID of the partition.<br>
+<h4>The CPU Panel</h4>
+The CPU panel is pretty simple and self-explanitory. It lists information about the architecture, 
+byte sequence, cores, threads, frequency, cache, vendor, model, virtualization technology, and PAE support of the CPU.<br>
+The logos displayed here are property of their respective manufacturers.<br>
+<h4>The Motherboard Panel</h4>
+The motherboard panel is also pretty self-explanitory. It lists information (mainly about the RAM) of the device.<br>
+RAM frequency information requires root access.<br>
+<h4>The Stress Test Panel</h4>
+The stress test panel tests the real-life speed of each of your components.<br>
+The "start stress test" button can be used to start the stress test (may take a bit of time).<br>
+You can also save your stress test results to a file.<br>
+CPU speeds here are measured in operations per second, divided by 1000. RAM speed is measured in KB/s<br>
+</body>
+</html>

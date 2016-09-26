@@ -1,0 +1,2 @@
+TESTOS = operations per test
+TESTTIMES (latent) = number of tests run
