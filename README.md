@@ -1,6 +1,10 @@
 ## GTK System Information
+<<<<<<< HEAD
 This is a simple front end GUI for multiple command line system info utilities on GTK.  
 This is the python 3 port.
+=======
+This is a simple front end GUI for multiple command line system info utilities on GTK.
+>>>>>>> cf31a4c166231a37549c516551f754f4910b7c2d
 
 ## Installation
 To build for your system, run: 
@@ -14,17 +18,41 @@ To run:
 out/gsysinfo
 ```
 
+<<<<<<< HEAD
+=======
+To build a portable version, run:
+```
+make freeze
+```
+Files will be placed in the build/ directory. Program may not be as reliable if built this way.
+
+To install a portable version of the program, run:
+```
+make freeze-install
+```
+To uninstall, run:
+```
+make freeze-uninstall
+```
+
+>>>>>>> cf31a4c166231a37549c516551f754f4910b7c2d
 ## Contributors
 id01 (Main Developer)
 
 ## Libraries Used
 * [PyGObject](http://www.pygtk.org/), by James Henstrige, Licensed under GNU LGPL. Imported in main.py.
+<<<<<<< HEAD
 * [Python3](https://www.python.org/) and included libraries, by Python Software Foundation, Python License. Used in all py files.
+=======
+* [Python](https://www.python.org/) and included libraries, by Python Software Foundation, Python License. Used in all py files.
+* [cx_Freeze 4.3.4](https://pypi.python.org/pypi/cx_freeze), by Anthony Tuininga, Python License. Imported in freeze.py.
+>>>>>>> cf31a4c166231a37549c516551f754f4910b7c2d
 * C++ Used in bin/c/*.cpp
 * C Used in bin/c/*.c
 * Disclaimer: Manufacturer logos are not my own. Intel logos are (c) Intel Inc. AMD logos are (c) AMD Inc.
 
 ## System Requirments
+<<<<<<< HEAD
 Same as Python 2, but replacing Python 2 modules with their python 3 counterparts.
 
 ## Changelog
@@ -32,6 +60,19 @@ Same as Python 2, but replacing Python 2 modules with their python 3 counterpart
  * Ported to Python 3
 * 0.1.0 (Testing)
  * High latency stress tests
+=======
+To run standalone:
+```
+util-linux lm-sensors hddtemp libsensors3
+```
+To build:
+```
+python python-utils python-gi gcc g++ util-linux lm-sensors hddtemp libsensors3
+```
+Building standalone also requires cx_freeze (from pip or source) be installed.
+
+## Changelog
+>>>>>>> cf31a4c166231a37549c516551f754f4910b7c2d
 * 0.0.9 (Prerelease)
  * Created makefile
  * Created configuration python file
