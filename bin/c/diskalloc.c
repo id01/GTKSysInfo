@@ -1,9 +1,7 @@
-#include <iostream>
-using namespace std;
-#include <string>
-using std::string;
+#include <string.h>
 #include <time.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 int main(int argc, char *argv[])
 {
@@ -12,11 +10,10 @@ int main(int argc, char *argv[])
 	{
 		return 1;
 	}
-	string arg;
-	arg = "";
-	arg += argv[1];
+	char * arg = malloc(1024);
+	strcpy(arg,argv[1]);
 	// Open File
-	FILE *testfile = fopen(arg.c_str(), "w");
+	FILE *testfile = fopen(arg, "w");
 	if (!testfile) { return 1; }
 	// Start timer. Write to file many times.
 	long timestart = clock();
@@ -29,7 +26,7 @@ int main(int argc, char *argv[])
 	printf("%f\n", 100000000.0/((double)timefinish-(double)timestart)*CLOCKS_PER_SEC);
 	// Close file and reopen.
 	fclose(testfile);
-	testfile=fopen(arg.c_str(), "r");
+	testfile=fopen(arg, "r");
 	// Start timer. Read to file many times.
 	timestart = clock();
 	for (int i=0; i<100000000; i++)
@@ -39,5 +36,5 @@ int main(int argc, char *argv[])
 	timefinish = clock();
 	// End timer. Print read Bps of file.
 	printf("%f\n", 100000000.0/((double)timefinish-(double)timestart)*CLOCKS_PER_SEC);
-	remove(arg.c_str());
+	remove(arg);
 }

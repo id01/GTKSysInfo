@@ -35,7 +35,6 @@ id01 (Main Developer)
 * [PyGObject](http://www.pygtk.org/), by James Henstrige, Licensed under GNU LGPL. Imported in main.py.
 * [Python](https://www.python.org/) and included libraries, by Python Software Foundation, Python License. Used in all py files.
 * [cx_Freeze 4.3.4](https://pypi.python.org/pypi/cx_freeze), by Anthony Tuininga, Python License. Imported in freeze.py.
-* C++ Used in bin/c/*.cpp
 * C Used in bin/c/*.c
 * Disclaimer: Manufacturer logos are not my own. Intel logos are (c) Intel Inc. AMD logos are (c) AMD Inc.
 
@@ -46,7 +45,7 @@ util-linux lm-sensors hddtemp libsensors3
 ```
 To build:
 ```
-python python-utils python-gi gcc g++ util-linux lm-sensors hddtemp libsensors3
+python python-utils python-gi gcc util-linux lm-sensors hddtemp libsensors3
 ```
 Building standalone also requires cx_freeze (from pip or source) be installed.
 

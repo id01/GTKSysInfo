@@ -28,8 +28,8 @@ echo "Compiling randgen.c"
 gcc -o out/bin/c/randgen bin/c/randgen.c
 echo "Compiling ramalloc.c"
 gcc -o out/bin/c/ramalloc bin/c/ramalloc.c
-echo "Compiling diskalloc.cpp"
-g++ -o out/bin/c/diskalloc bin/c/diskalloc.cpp
+echo "Compiling diskalloc.c"
+gcc -o out/bin/c/diskalloc bin/c/diskalloc.c
 echo "Copying Logos"
 cp bin/logos/* out/bin/logos/
 echo "Copying Help"
