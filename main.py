@@ -13,6 +13,7 @@ import os;
 import time;
 import sys;
 from gi.repository import Gtk;
+from gi.repository import GObject;
 import config;
 
 # Import configuration
@@ -42,6 +43,7 @@ if os.system("sensors > /dev/null")!=0:
 		os.system("sensors-detect --auto > /dev/null");
 	else:
 		sensors=False;
+		log+="WARNING: sensors cannot be initialized.\n";
 
 # Main window
 class mainClass(Gtk.Window):
@@ -161,15 +163,19 @@ class mainClass(Gtk.Window):
 			self.buttonList.append(Gtk.Button(label=disknamevar + "\n" + os.popen("lsblk -io SIZE /dev/" + disknamevar + " | head -n 2 | tail -n 1").read().strip()));
 			self.buttonList[x].connect("clicked", self.change_text_disk, disknamevar)
 			self.diskSelectGrid.attach(self.buttonList[x], 1, x+1, 1, 1)
-		## Create Partition Select Entry
+		## Create default partition combobox
 		self.partSelectLabel = Gtk.Label();
-		self.partSelectLabel.set_text("Enter Mounted Partition\nHere To View Details:");
-		self.partSelectLabel.set_halign(1);
-		self.partSelectEntry = Gtk.Entry();
-		self.partSelectEntry.set_text("sda1");
-		self.partSelectEntry.connect('activate', self.change_part_text);
+		self.partSelectLabel.set_text("Select Mounted Partition\nHere To View Details:");
+		self.diskPartBox = Gtk.ComboBox();
+		self.diskPartBox.connect("changed", self.change_part_text);
+		self.diskPartBoxRender = Gtk.CellRendererText();
+		self.diskPartBox.pack_start(self.diskPartBoxRender, True);
+		self.diskPartBox.add_attribute(self.diskPartBoxRender, "text", 0);
+		self.diskPartAsterikLabel = Gtk.Label();
+		self.diskPartAsterikLabel.set_text("*: Mounted");
 		self.diskSelectGrid.attach(self.partSelectLabel, 1, len(self.buttonList)+1, 1, 1);
-		self.diskSelectGrid.attach(self.partSelectEntry, 1, len(self.buttonList)+2, 1, 1);
+		self.diskSelectGrid.attach(self.diskPartBox, 1, len(self.buttonList)+2, 1, 1);
+		self.diskSelectGrid.attach(self.diskPartAsterikLabel, 1, len(self.buttonList)+3, 1, 1);
 		## Create Partition Details
 		self.partDetailsGrid = Gtk.Grid();
 		self.partDetailsLabel = Gtk.Label();
@@ -260,6 +266,9 @@ class mainClass(Gtk.Window):
 		self.cpuSensorDataLabel = Gtk.Label();
 		self.sensorExpandLabel = Gtk.Label();
 		self.sensorExpandLabel.set_text("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t");
+
+		''' TIMEOUTS - LAYER X-1 '''
+		self.sensorUpdateTimeout = GObject.timeout_add(1000, self.update_sensor_stats)
 
 		''' DRAWING - LAYER X-1 '''
 		self.sensorTextGrid.add(self.cpuMbLabel);
@@ -355,8 +364,26 @@ class mainClass(Gtk.Window):
 		os.system("xdg-open build.txt &");
 
 ### LAYER 1
+	## Define the function to Change Partition Menu
+	def change_part_menu(self, disk):
+		partString = os.popen("lsblk -io KNAME /dev/" + disk + " | tail -n +2").read();
+		partStringArray = partString.split('\n');
+		del partStringArray[-1];
+		partList = Gtk.ListStore(str);
+		partNum = 0;
+		for part in partStringArray:
+			if os.system("cat /proc/mounts | grep -w /dev/" + part + " > /dev/null") == 0:
+				partStringArray[partNum]=part+" *";
+			partNum+=1;
+		for part in partStringArray:
+			partList.append([part]);
+		self.diskPartBox.set_model(partList);
+		self.diskPartBox.set_active(0);
+
 	## Define the function to Change Disk Text
 	def change_text_disk(self, widget, disk):
+		# Change Partition Menu
+		self.change_part_menu(disk);
 		# Get System Information, Formatted.
 		partString=os.popen("lsblk -io KNAME /dev/" + disk + " | tail -n +2").read();
 		partFsInfoRaw=os.popen("lsblk -io FSTYPE /dev/" + disk + " | tail -n +2").read().split("\n");
@@ -404,15 +431,22 @@ class mainClass(Gtk.Window):
 		self.diskPartMountLabel.set_text("\nMount point:\n" + "\n".join(partMountInfoRaw));
 		self.diskVendorLabel.set_text("VENDOR:\n" + vendorString + "\nMODEL:\n" + modelString);
 		self.diskStateLabel.set_text("HOTPLUGGABLE:\n" + str(hotplug) + "\n\nRUNNING:\n" + stateString);
-		self.partSelectEntry.set_text("");
-		self.change_part_text(self.partSelectEntry);
+		self.clear_part_text();
+
+	## Define the function to clear partition text
+	def clear_part_text(self):
+		self.partSelectLabel.set_text("Enter Mounted Partition\nHere To View Details:");
+		self.partDetailsLabel.set_text("Partition Details:\n");
+		self.partSpaceLabel.set_text("Select Mounted Partition");
+		self.partUUIDLabel.set_text("\nUUID:\nNONE");
 
 	## Define the function to change partition text
-	def change_part_text(self, widget):
+	def change_part_text(self, combo):
 		# Sets mounted to false
 		mounted=False;
 		# Gets partselectstring from input
-		partSelectString=self.partSelectEntry.get_text().strip();
+		currentIter=combo.get_active_iter();
+		partSelectString=combo.get_model()[currentIter][0].strip("* \n");
 		if os.system("lsblk /dev/" + partSelectString + " 2> /dev/null > /dev/null")==32:
 			partSelectString="";
 		# If partselectstring does not end with a digit, cannot be a partition.
@@ -424,6 +458,8 @@ class mainClass(Gtk.Window):
 			self.partDetailsLabel.set_text("Partition Details:\n");
 			self.partSpaceLabel.set_text("Select Mounted Partition");
 			self.partUUIDLabel.set_text("\nUUID:\nNONE");
+			self.partSpaceBar.set_fraction(0);
+			self.partSpaceLabel.set_text("Not a mounted partition.");
 			return;
 		spaceUsedRaw=os.popen("df -h | grep /dev/" + partSelectString + " | awk '{print $5}'").read().strip().strip('%');
 		# If rooted and unmounted, mount partition and set mounted to true.
@@ -432,7 +468,7 @@ class mainClass(Gtk.Window):
 			spaceUsedRaw=os.popen("df -h | grep /dev/" + partSelectString + " | awk '{print $5}'").read().strip().strip('%');
 			mounted=True;
 		partUUID=os.popen("lsblk -o UUID /dev/" + partSelectString + " | tail -n +2").read();
-		self.partDetailsLabel.set_text("Partition Details (" + self.partSelectEntry.get_text().strip() + "):\n");
+		self.partDetailsLabel.set_text("Partition Details (" + partSelectString + "):\n");
 		# If could not find disk data, print messages. Else, print data.
 		if spaceUsedRaw=='':
 			if rooted==False:
@@ -562,6 +598,27 @@ class mainClass(Gtk.Window):
 		self.cpuMbDataLabel.set_text(ramSizeData + "\t\n" + ramUsedData + "\n" + swapSizeData + "\n" + swapUsedData + "\n");
 		self.cpuSensorLabel.set_text("RAM speed:\nCPU Fan speed:\nCPU Temp:\nMotherboard Temp:\n");
 		self.cpuSensorDataLabel.set_text(ramSpeedData + "\n" + cpuFanSpeedData + "\n" + cpuFanTempData + "\n" + mbTempData + "\n");
+
+	def update_sensor_stats(self):
+		## Sensors needed: cpuSensor
+		if sensors==True:
+			cpuFanSpeedData=os.popen("sensors | grep 'CPU Fan Speed'").read().split(":")[1].strip();
+			cpuFanTempData=os.popen("sensors | grep 'CPU Temperature'").read().split(":")[1].strip();
+			mbTempData=os.popen("sensors | grep 'MB Temperature'").read().split(":")[1].strip();
+		else:
+			cpuFanSpeedData="NO ROOT";
+			cpuFanTempData="NO ROOT";
+			mbTempData="NO ROOT";
+		## No root needed: cpuMb
+		ramSpeedData = self.cpuSensorDataLabel.get_text().split('\n', 1)[0];
+		ramSizeData = os.popen("free | grep 'Mem:' | awk '{print $2}'").read().strip();
+		ramUsedData = os.popen("free | grep 'Mem:' | awk '{print $3}'").read().strip();
+		swapSizeData = os.popen("free | grep 'Swap:' | awk '{print $2}'").read().strip();
+		swapUsedData = os.popen("free | grep 'Swap:' | awk '{print $3}'").read().strip();
+			
+		self.cpuMbDataLabel.set_text(ramSizeData + "\t\n" + ramUsedData + "\n" + swapSizeData + "\n" + swapUsedData + "\n");
+		self.cpuSensorDataLabel.set_text(ramSpeedData + "\n" + cpuFanSpeedData + "\n" + cpuFanTempData + "\n" + mbTempData + "\n");
+		return True;
 
 ### LAYER X
 	## Stress Test Function

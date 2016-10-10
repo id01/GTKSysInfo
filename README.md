@@ -50,6 +50,11 @@ python python-utils python-gi gcc util-linux lm-sensors hddtemp libsensors3
 Building standalone also requires cx_freeze (from pip or source) be installed.
 
 ## Changelog
+* 0.1.1 (Testing)
+ * Drop-Down menu for partitions
+ * Improved partition notation
+ * Automatically updating values
+ * Updated diskalloc.c
 * 0.1.0 (Testing)
  * High latency stress tests
 * 0.0.9 (Prerelease)
