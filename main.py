@@ -366,9 +366,11 @@ class mainClass(Gtk.Window):
 ### LAYER 1
 	## Define the function to Change Partition Menu
 	def change_part_menu(self, disk):
+		# Get partition names into array
 		partString = os.popen("lsblk -io KNAME /dev/" + disk + " | tail -n +2").read();
 		partStringArray = partString.split('\n');
 		del partStringArray[-1];
+		# Create new model for diskPartBox
 		partList = Gtk.ListStore(str);
 		partNum = 0;
 		for part in partStringArray:
@@ -377,6 +379,7 @@ class mainClass(Gtk.Window):
 			partNum+=1;
 		for part in partStringArray:
 			partList.append([part]);
+		# Set model for diskPartBox, set diskPartBox entry back to 0
 		self.diskPartBox.set_model(partList);
 		self.diskPartBox.set_active(0);
 
